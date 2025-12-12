@@ -34,17 +34,6 @@ Se comunica con un backend desarrollado en FastAPI mediante servicios REST.
 implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 ******************************************************************************************
-****Estructura del Proyecto****
-app/
- └── java/com.example.prj_control_financiero/
-      ├── MainActivity.java
-      ├── DashboardActivity.java
-      ├── RegistrarMovimientoActivity.java
-      ├── PresupuestoActivity.java
-      ├── ResumenMensualActivity.java
-      └── data/models/MovimientoRequest.java
-
-******************************************************************************************
 ****Flujo de Uso****
 1. El usuario inicia sesión con el PIN.
 2. La aplicación solicita al backend la validación del PIN.
