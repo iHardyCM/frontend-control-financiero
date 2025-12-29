@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText editPin;
     private Button btnIngresar;
     private TextView usarHuella;
+    private TextView registrarUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         editPin = findViewById(R.id.edit_pin);
         btnIngresar = findViewById(R.id.btnIngresar);
         usarHuella = findViewById(R.id.usarHuella);
+        registrarUsuario = findViewById(R.id.registrarUsuario);
 
         Button b0 = findViewById(R.id.boton0);
         Button b1 = findViewById(R.id.boton1);
@@ -95,6 +97,12 @@ public class MainActivity extends AppCompatActivity {
         usarHuella.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, BiometricActivity.class))
         );
+
+        registrarUsuario.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, RegistroUsuarioActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     private boolean login(String pin){
