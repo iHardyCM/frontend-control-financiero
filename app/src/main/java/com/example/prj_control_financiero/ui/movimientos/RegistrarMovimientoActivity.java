@@ -15,7 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.prj_control_financiero.R;
 import com.example.prj_control_financiero.data.models.MovimientoRequest;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -70,6 +73,8 @@ public class RegistrarMovimientoActivity extends AppCompatActivity {
             else if (id == R.id.cat_otros) {
                 categoriaSeleccionada = "Otros";
             }
+
+            System.out.println("CATEGORIA SELECCIONADA -> " + categoriaSeleccionada);
         };
 
 
@@ -153,14 +158,23 @@ public class RegistrarMovimientoActivity extends AppCompatActivity {
                 this,
                 (view, year, month, day) -> {
                     month += 1;
-                    fechaSeleccionada = String.format("%02d/%02d/%04d", day, month, year);
-                    Toast.makeText(this, "Fecha: " + fechaSeleccionada, Toast.LENGTH_SHORT).show();
+                    fechaSeleccionada = String.format(
+                            "%04d-%02d-%02d",
+                            year, month, day
+                    );
+
+                    Toast.makeText(this,
+                            "Fecha: " + fechaSeleccionada,
+                            Toast.LENGTH_SHORT).show();
                 },
-                2025, 1, 1
+                2025, 0, 1
         );
 
         datePicker.show();
     }
+
+
+
 
     private void enviarMovimiento(float monto, String tipo, String categoria, String fecha){
 
@@ -173,22 +187,57 @@ public class RegistrarMovimientoActivity extends AppCompatActivity {
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
                 conn.setDoOutput(true);
 
+                int idUsuario = getSharedPreferences("session", MODE_PRIVATE)
+                        .getInt("id_usuario", 0);
+                System.out.println("ID USUARIO -> " + idUsuario);
+
+                int idCuenta = 1;
+                int idCategoria = obtenerIdCategoria(categoria);
+                int idFecha = 1; // MVP
+
+                System.out.println("CATEGORIA RECIBIDA -> [" + categoria + "]");
+                System.out.println("ID CATEGORIA -> " + idCategoria);
+
+                if (idUsuario == 0 || idCategoria == 0) {
+                    runOnUiThread(() ->
+                            Toast.makeText(this, "Datos inválidos", Toast.LENGTH_SHORT).show()
+                    );
+                    return;
+                }
+
                 String json = "{"
+                        + "\"id_usuario\":" + idUsuario + ","
+                        + "\"id_cuenta\":" + idCuenta + ","
+                        + "\"id_categoria\":" + idCategoria + ","
+                        + "\"fecha\":\"" + fecha + "\","
                         + "\"monto\":" + monto + ","
-                        + "\"tipo\":\"" + tipo + "\","
-                        + "\"categoria\":\"" + categoria + "\","
-                        + "\"fecha\":\"" + fecha + "\""
+                        + "\"descripcion\":\"" + categoria + "\""
                         + "}";
 
-                conn.getOutputStream().write(json.getBytes("utf-8"));
+
+
+                System.out.println("JSON -> " + json);
+
+                try (OutputStream os = conn.getOutputStream()) {
+                    os.write(json.getBytes("utf-8"));
+                }
 
                 int responseCode = conn.getResponseCode();
                 InputStream errorStream = conn.getErrorStream();
                 String backendError = "";
 
-                if (errorStream != null){
-                    backendError = new String(errorStream.readAllBytes());
+                if (errorStream != null) {
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(errorStream)
+                    );
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    backendError = sb.toString();
                 }
+
                 String finalBackendError = backendError;
 
                 runOnUiThread(() ->{
@@ -196,7 +245,9 @@ public class RegistrarMovimientoActivity extends AppCompatActivity {
                         Toast.makeText(this, "Movimiento guardado correctamente", Toast.LENGTH_SHORT).show();
                         limpiarFormulario();
                     } else {
-                        Toast.makeText(this, "Error al guardar: "+ responseCode, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                "Error (" + responseCode + "): " + finalBackendError,
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (Exception e){
@@ -206,6 +257,22 @@ public class RegistrarMovimientoActivity extends AppCompatActivity {
             }
         }).start();
     }
+
+    private int obtenerIdCategoria(String categoria) {
+        if (categoria == null) return 0;
+
+        switch (categoria.trim().toLowerCase()) {
+            case "hogar": return 1;
+            case "transporte": return 2;
+            case "alimentos": return 3;
+            case "salud": return 4;
+            case "entretenimiento": return 5;
+            case "otros": return 6;
+            case "ingreso": return 7;
+            default: return 0;
+        }
+    }
+
 
     private void limpiarFormulario(){
         edtMonto.setText("");

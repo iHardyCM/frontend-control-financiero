@@ -22,6 +22,7 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    private EditText login_username;
     private EditText editPin;
     private Button btnIngresar;
     private TextView usarHuella;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        login_username = findViewById(R.id.edt_login_username);
         editPin = findViewById(R.id.edit_pin);
         btnIngresar = findViewById(R.id.btnIngresar);
         usarHuella = findViewById(R.id.usarHuella);
@@ -70,6 +72,13 @@ public class MainActivity extends AppCompatActivity {
 
         btnIngresar.setOnClickListener(v -> {
             String pinIngresado = editPin.getText().toString().trim();
+            String username = login_username.getText().toString().trim();
+
+            if (username.isEmpty()) {
+                Toast.makeText(this, "Ingresa tu usuario", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
 
             if (pinIngresado.isEmpty()) {
                 Toast.makeText(this, "Ingrese PIN", Toast.LENGTH_SHORT).show();
@@ -77,20 +86,34 @@ public class MainActivity extends AppCompatActivity {
             }
 
             new Thread(() -> {
-                boolean acceso = login(pinIngresado);
+                int idUsuario = login(username, pinIngresado);
 
                 runOnUiThread(() -> {
-                    if (acceso) {
+                    if (idUsuario > 0) {
 
-                        runOnUiThread(() -> {
-                            Toast.makeText(MainActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                            startActivity(intent);
-                        });
+                        // 🔑 GUARDAR SESIÓN
+                        getSharedPreferences("session", MODE_PRIVATE)
+                                .edit()
+                                .putInt("id_usuario", idUsuario)
+                                .apply();
+
+                        Toast.makeText(this,
+                                "Inicio de sesión exitoso",
+                                Toast.LENGTH_SHORT).show();
+
+                        startActivity(new Intent(
+                                MainActivity.this,
+                                DashboardActivity.class
+                        ));
+                        finish();
+
                     } else {
-                        Toast.makeText(MainActivity.this, "PIN incorrecto", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                "Credenciales incorrectas",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
+
             }).start();
         });
 
@@ -105,19 +128,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean login(String pin){
-        try{
+    private int login(String username, String pin) {
+        try {
             URL url = new URL("http://10.0.2.2:8000/login");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json; utf-8");
             conn.setDoOutput(true);
 
-            String jsonInput = "{\"pin\":\"" + pin + "\"}";
+            String jsonInput =
+                    "{ \"username\": \"" + username + "\", " +
+                            "\"pin\": \"" + pin + "\" }";
 
             try (OutputStream os = conn.getOutputStream()) {
-                byte[] input = jsonInput.getBytes("utf-8");
-                os.write(input, 0, input.length);
+                os.write(jsonInput.getBytes("utf-8"));
             }
 
             BufferedReader br = new BufferedReader(
@@ -130,12 +154,24 @@ public class MainActivity extends AppCompatActivity {
                 response.append(line.trim());
             }
 
-            System.out.println("RESPUESTA DEL SERVIDOR: " + response.toString());
+            String jsonResponse = response.toString();
+            System.out.println("RESPUESTA LOGIN -> " + jsonResponse);
 
-            return response.toString().contains("\"success\":true");
+            if (jsonResponse.contains("\"success\":true")) {
+                // 🔑 extraer id_usuario
+                String idStr = jsonResponse
+                        .replaceAll(".*\"id_usuario\":", "")
+                        .replaceAll("[^0-9].*", "");
+
+                return Integer.parseInt(idStr);
+            }
+
+            return 0;
+
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return 0;
         }
     }
+
 }

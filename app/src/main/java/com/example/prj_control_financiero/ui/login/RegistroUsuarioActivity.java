@@ -1,6 +1,7 @@
 package com.example.prj_control_financiero.ui.login;
 
 import android.os.Bundle;
+import retrofit2.Call;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -12,6 +13,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.prj_control_financiero.R;
+import com.example.prj_control_financiero.data.api.ApiClient;
+import com.example.prj_control_financiero.data.api.ApiService;
+import com.example.prj_control_financiero.data.models.UsuarioRequest;
+
+import java.util.Map;
+
+import retrofit2.Response;
+import retrofit2.Callback;
 
 public class RegistroUsuarioActivity extends AppCompatActivity {
 
@@ -55,8 +64,38 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(this,
-                "Formulario correcto\nUsuario: " + username,
-                Toast.LENGTH_LONG).show();
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        UsuarioRequest request = new UsuarioRequest(username, email, pin);
+
+        apiService.registrarUsuario(request).enqueue(new Callback<Map<String, Object>>() {
+
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+
+                if (response.isSuccessful()
+                        && response.body() != null
+                        && Boolean.TRUE.equals(response.body().get("success"))) {
+
+                    Toast.makeText(RegistroUsuarioActivity.this,
+                            "Usuario creado correctamente",
+                            Toast.LENGTH_SHORT).show();
+
+                    finish(); // vuelve al login
+
+                } else {
+                    Toast.makeText(RegistroUsuarioActivity.this,
+                            "Usuario ya existe o error en registro",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                Toast.makeText(RegistroUsuarioActivity.this,
+                        "Error de conexión con el servidor",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }
