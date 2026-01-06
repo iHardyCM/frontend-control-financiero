@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:gravity="center_horizontal">
+            android:padding="20dp">
 
+            <!-- TÍTULO -->
             <TextView
                 android:id="@+id/txtview_TituloPresupuesto"
                 android:layout_width="wrap_content"
@@ -25,72 +25,228 @@
                 android:text="Presupuesto del Mes"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="20dp"/>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"/>
 
+            <!-- TOTAL -->
             <TextView
                 android:id="@+id/txtview_PresupuestoTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Presupuesto Total: S/ 0.00"
                 android:textSize="18sp"
-                android:layout_marginBottom="20dp"/>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"/>
 
-            <TextView
-                android:id="@+id/txtview_CategoriaTransporte"
-                android:layout_width="wrap_content"
+            <!-- ================= HOGAR ================= -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Transporte"
-                android:textSize="16sp"/>
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:id="@+id/txtHogar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Hogar"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/txtHogarPct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressHogar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/progress_presupuesto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="0"
+                android:layout_marginBottom="30dp"/>
+
+            <!-- ================= TRANSPORTE ================= -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:id="@+id/txtTransporte"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Transporte"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/txtTransportePct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="16sp"/>
+            </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/progressTransporte"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:progress="30"
+                android:progressDrawable="@drawable/progress_presupuesto"
                 android:max="100"
-                android:layout_marginBottom="15dp"/>
+                android:progress="0"
+                android:layout_marginBottom="20dp"/>
 
-
-            <TextView
-                android:id="@+id/txtview_CategoriaAlimentos"
-                android:layout_width="wrap_content"
+            <!-- ================= ALIMENTOS ================= -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Alimentos"
-                android:textSize="16sp"/>
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:id="@+id/txtAlimentos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Alimentos"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/txtAlimentosPct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="16sp"/>
+            </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/progressAlimentos"
                 style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/progress_presupuesto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:progress="60"
                 android:max="100"
-                android:layout_marginBottom="15dp"/>
+                android:progress="0"
+                android:layout_marginBottom="20dp"/>
 
-
-            <TextView
-                android:id="@+id/txtview_CategoriaServicios"
-                android:layout_width="wrap_content"
+            <!-- ================= SALUD ================= -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Servicios"
-                android:textSize="16sp"/>
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:id="@+id/txtServicios"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Salud"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/txtSaludPct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="16sp"/>
+            </LinearLayout>
 
             <ProgressBar
-                android:id="@+id/progressServicios"
+                android:id="@+id/progressSalud"
                 style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/progress_presupuesto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:progress="40"
                 android:max="100"
-                android:layout_marginBottom="25dp"/>
+                android:progress="0"
+                android:layout_marginBottom="30dp"/>
 
 
+            <!-- ================= ENTRETENIMIENTO ================= -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:id="@+id/txtEntretenimiento"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Entretenimiento"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/txtEntretenimientoPct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressEntretenimiento"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/progress_presupuesto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="0"
+                android:layout_marginBottom="30dp"/>
+
+
+            <!-- ================= OTROS ================= -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:id="@+id/txtOtros"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Otros"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/txtOtrosPct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+
+            <ProgressBar
+                android:id="@+id/progressOtros"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/progress_presupuesto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="0"
+                android:layout_marginBottom="30dp"/>
+
+
+            <!-- BOTÓN -->
             <Button
                 android:id="@+id/btn_EditarPresupuesto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Editar Presupuesto"/>
+
 
         </LinearLayout>
     </ScrollView>

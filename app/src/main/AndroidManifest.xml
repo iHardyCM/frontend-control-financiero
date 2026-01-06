@@ -16,10 +16,14 @@
         android:theme="@style/Theme.Prj_Control_Financiero"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.presupuesto.EditarPresupuestoActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.login.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
