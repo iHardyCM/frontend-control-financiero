@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 
 public class RegistrarMovimientoActivity extends AppCompatActivity {
 
@@ -154,24 +155,36 @@ public class RegistrarMovimientoActivity extends AppCompatActivity {
     }
 
     private void seleccionarFecha() {
+
+        Calendar calendar = Calendar.getInstance();
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH); // enero = 0
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
         DatePickerDialog datePicker = new DatePickerDialog(
                 this,
-                (view, year, month, day) -> {
-                    month += 1;
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+
+                    selectedMonth += 1;
+
                     fechaSeleccionada = String.format(
                             "%04d-%02d-%02d",
-                            year, month, day
+                            selectedYear, selectedMonth, selectedDay
                     );
 
-                    Toast.makeText(this,
+                    Toast.makeText(
+                            this,
                             "Fecha: " + fechaSeleccionada,
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_SHORT
+                    ).show();
                 },
-                2025, 0, 1
+                year, month, day
         );
 
         datePicker.show();
     }
+
 
 
 
